@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://jf4jnlxuil2i"]
+
+[ext_resource type="Script" uid="uid://bv25pj3mmsg4" path="res://balloon.gd" id="1_n2rxu"]
+[ext_resource type="Texture2D" uid="uid://37db11tqp4dh" path="res://blue.png" id="2_r345k"]
+[ext_resource type="Texture2D" uid="uid://digiytepyi1qv" path="res://blue-pop.png" id="3_4emby"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ig7tw"]
+radius = 38.209946
+
+[node name="Balloon" type="Area2D" unique_id=893363848]
+position = Vector2(303, 574)
+script = ExtResource("1_n2rxu")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1149669827]
+position = Vector2(1.1920929e-07, 12)
+scale = Vector2(0.19957386, 0.17089845)
+texture = ExtResource("2_r345k")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2061787012]
+position = Vector2(0, -2)
+shape = SubResource("CircleShape2D_ig7tw")
+
+[node name="Label" type="Label" parent="." unique_id=1022063478]
+offset_left = -20.0
+offset_top = -38.0
+offset_right = 20.0
+offset_bottom = 31.0
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 50
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PopSprite" type="Sprite2D" parent="." unique_id=320063545]
+visible = false
+position = Vector2(1, -1.9999847)
+scale = Vector2(0.14630683, 0.14322929)
+texture = ExtResource("3_4emby")
