@@ -4,7 +4,7 @@ var letter = "А"
 var speed = 100 
 var is_popping = false
 
-# Словарик со всеми твоими шариками и их лопнувшими версиями
+# Словарик с твоими шариками и их лопнувшими версиями
 var balloon_data = [
 	{
 		"texture": preload("res://blue.png"),
@@ -27,49 +27,54 @@ var balloon_data = [
 var chosen_data = null
 
 func _ready():
-	# 1. Задаём текст буквы
+	# Задаём текст буквы
 	if has_node("Label"):
 		$Label.text = letter
 
-	# 2. Выбираем случайный цвет шарика
+	# Выбираем случайный цвет шарика
 	var random_index = randi() % balloon_data.size()
 	chosen_data = balloon_data[random_index]
 	
-	# Применяем выбранную картинку к Sprite2D
 	if has_node("Sprite2D"):
 		$Sprite2D.texture = chosen_data["texture"]
 
 func _process(delta):
-	# Движение вверх, пока шарик цел
 	if not is_popping:
 		position.y -= speed * delta
-		
-		# Если шарик улетел за верхний край экрана — удаляем
 		if position.y < -100:
 			queue_free()
 
-func _input_event(_viewport, event, _shape_idx):
-	if event is InputEventMouseButton and event.pressed:
-		get_tree().call_group("game", "check_letter", letter, self)
+# САМЫЙ НАДЁЖНЫЙ СПОСОБ КЛИКА: проверяем расстояние от клика до центра шарика
+func _input(event):
+	if is_popping:
+		return
+		
+	# Когда нажата левая кнопка мыши или выполнен тап по экрану
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		var click_position = get_global_mouse_position()
+		
+		# Проверяем: если расстояние от клика до центра шарика меньше 65 пикселей — считаем, что попали!
+		if global_position.distance_to(click_position) <= 65:
+			print("Попадание по шарику с буквой: ", letter)
+			var main_node = get_tree().current_scene
+			if main_node and main_node.has_method("check_letter"):
+				main_node.check_letter(letter, self)
 
 # Функция лопания шарика
 func pop():
 	if is_popping:
 		return
 		
-	is_popping = true # Останавливаем движение
+	is_popping = true
 	
-	# Прячем целую картинку и букву
 	if has_node("Sprite2D"):
 		$Sprite2D.visible = false
 	if has_node("Label"):
 		$Label.visible = false
 	
-	# Если есть узел PopSprite — ставим в него нужный цвет лопнувшего шарика и показываем
 	if has_node("PopSprite") and chosen_data != null:
 		$PopSprite.texture = chosen_data["pop_texture"]
 		$PopSprite.visible = true
 	
-	# Задержка 0.4 секунды перед удалением
 	await get_tree().create_timer(0.4).timeout
 	queue_free()

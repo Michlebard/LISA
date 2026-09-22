@@ -1,13 +1,204 @@
 [gd_scene format=3 uid="uid://bcaf1ejviv66v"]
 
 [ext_resource type="Script" uid="uid://bnpolwvpu3lae" path="res://main.gd" id="1_ig7tw"]
+[ext_resource type="Texture2D" uid="uid://cxy1bubwk4w6e" path="res://Gemini_Generated_Image_lujf55lujf55lujf.jpeg" id="2_0xm2m"]
+
+[sub_resource type="Theme" id="Theme_4kxuq"]
+default_font_size = 40
+
+[sub_resource type="Theme" id="Theme_4emby"]
+default_font_size = 37
 
 [node name="Main" type="Node2D" unique_id=859964832 groups=["game"]]
+position = Vector2(5, 0)
 script = ExtResource("1_ig7tw")
+
+[node name="ColorRect" type="TextureRect" parent="." unique_id=1410684489]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -5.0
+offset_right = 1147.0
+offset_bottom = 648.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource("2_0xm2m")
+expand_mode = 1
+metadata/_edit_lock_ = true
+
+[node name="MainMenu" type="Control" parent="ColorRect" unique_id=1547082994]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource("Theme_4kxuq")
+
+[node name="VBoxContainer" type="GridContainer" parent="ColorRect/MainMenu" unique_id=158092483]
+modulate = Color(0.70177746, 0.86063355, 1, 1)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -555.5
+offset_top = -140.5
+offset_right = 555.5
+offset_bottom = 140.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_4emby")
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 15
+columns = 5
+
+[node name="Button1" type="Button" parent="ColorRect/MainMenu/VBoxContainer" unique_id=686053777]
+layout_mode = 2
+text = "Уровень 1"
+
+[node name="Button2" type="Button" parent="ColorRect/MainMenu/VBoxContainer" unique_id=1719656455]
+layout_mode = 2
+text = "Уровень 2"
+
+[node name="Button3" type="Button" parent="ColorRect/MainMenu/VBoxContainer" unique_id=770472408]
+layout_mode = 2
+text = "Уровень 3"
+
+[node name="Button4" type="Button" parent="ColorRect/MainMenu/VBoxContainer" unique_id=740640708]
+layout_mode = 2
+text = "Уровень 4"
+
+[node name="Button5" type="Button" parent="ColorRect/MainMenu/VBoxContainer" unique_id=896576720]
+layout_mode = 2
+text = "Уровень 5"
+
+[node name="Button6" type="Button" parent="ColorRect/MainMenu/VBoxContainer" unique_id=1473281678]
+layout_mode = 2
+text = "Уровень 6"
+
+[node name="Button7" type="Button" parent="ColorRect/MainMenu/VBoxContainer" unique_id=1121599993]
+layout_mode = 2
+text = "Уровень 7"
+
+[node name="Button8" type="Button" parent="ColorRect/MainMenu/VBoxContainer" unique_id=2115145866]
+layout_mode = 2
+text = "Уровень 8"
+
+[node name="Button9" type="Button" parent="ColorRect/MainMenu/VBoxContainer" unique_id=1468736740]
+layout_mode = 2
+text = "Уровень 9"
+
+[node name="Button10" type="Button" parent="ColorRect/MainMenu/VBoxContainer" unique_id=1331233057]
+layout_mode = 2
+text = "Уровень 10"
+
+[node name="Button11" type="Button" parent="ColorRect/MainMenu/VBoxContainer" unique_id=478604158]
+layout_mode = 2
+text = "Уровень 11"
+
+[node name="Button12" type="Button" parent="ColorRect/MainMenu/VBoxContainer" unique_id=1170237818]
+layout_mode = 2
+text = "Уровень 12"
+
+[node name="Button13" type="Button" parent="ColorRect/MainMenu/VBoxContainer" unique_id=1521433991]
+layout_mode = 2
+text = "Уровень 13"
+
+[node name="Button14" type="Button" parent="ColorRect/MainMenu/VBoxContainer" unique_id=518603313]
+layout_mode = 2
+text = "Уровень 14"
+
+[node name="Button15" type="Button" parent="ColorRect/MainMenu/VBoxContainer" unique_id=1371044926]
+layout_mode = 2
+text = "Уровень 15"
+
+[node name="Button16" type="Button" parent="ColorRect/MainMenu/VBoxContainer" unique_id=1347625606]
+layout_mode = 2
+text = "Уровень 16"
+
+[node name="Button17" type="Button" parent="ColorRect/MainMenu/VBoxContainer" unique_id=1584441866]
+layout_mode = 2
+text = "Уровень 17"
+
+[node name="Button18" type="Button" parent="ColorRect/MainMenu/VBoxContainer" unique_id=2121182111]
+layout_mode = 2
+text = "Уровень 18"
+
+[node name="Button19" type="Button" parent="ColorRect/MainMenu/VBoxContainer" unique_id=1741124092]
+layout_mode = 2
+text = "Уровень 19"
+
+[node name="Button20" type="Button" parent="ColorRect/MainMenu/VBoxContainer" unique_id=510425720]
+layout_mode = 2
+text = "Уровень 20"
+
+[node name="TargetLabel" type="RichTextLabel" parent="ColorRect" unique_id=1263812060]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -229.25
+offset_right = 229.25
+offset_bottom = 110.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+theme_override_constants/outline_size = 17
+theme_override_font_sizes/normal_font_size = 80
+horizontal_alignment = 1
 
 [node name="Timer" type="Timer" parent="." unique_id=1019909802]
 autostart = true
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1566883988]
 
+[node name="HeartsLabel" type="Label" parent="." unique_id=1931113325]
+unique_name_in_owner = true
+offset_left = 21.0
+offset_top = 48.0
+offset_right = 300.0
+offset_bottom = 120.0
+theme_override_constants/paragraph_spacing = 0
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_font_sizes/font_size = 39
+text = "❤️❤️❤️❤️❤️"
+
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button1" to="." method="_on_level_1_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button2" to="." method="_on_level_2_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button3" to="." method="_on_level_3_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button4" to="." method="_on_level_4_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button5" to="." method="_on_level_5_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button6" to="." method="_on_level_6_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button7" to="." method="_on_level_7_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button8" to="." method="_on_level_8_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button9" to="." method="_on_level_9_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button10" to="." method="_on_level_10_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button11" to="." method="_on_level_10_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button11" to="." method="_on_level_11_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button12" to="." method="_on_level_10_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button12" to="." method="_on_level_12_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button13" to="." method="_on_level_13_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button14" to="." method="_on_level_14_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button14" to="." method="_on_level_10_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button15" to="." method="_on_level_15_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button15" to="." method="_on_level_10_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button16" to="." method="_on_level_16_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button16" to="." method="_on_level_10_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button17" to="." method="_on_level_17_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button18" to="." method="_on_level_18_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button18" to="." method="_on_level_10_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button19" to="." method="_on_level_19_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button19" to="." method="_on_level_10_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button20" to="." method="_on_level_20_pressed"]
+[connection signal="pressed" from="ColorRect/MainMenu/VBoxContainer/Button20" to="." method="_on_level_10_pressed"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
