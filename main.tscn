@@ -9,17 +9,22 @@ default_font_size = 40
 [sub_resource type="Theme" id="Theme_4emby"]
 default_font_size = 37
 
-[node name="Main" type="Node2D" unique_id=859964832 groups=["game"]]
-position = Vector2(5, 0)
-script = ExtResource("1_ig7tw")
-
-[node name="ColorRect" type="TextureRect" parent="." unique_id=1410684489]
+[node name="Main" type="Control" unique_id=1724203934 groups=["game"]]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -5.0
-offset_right = 1147.0
-offset_bottom = 648.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_ig7tw")
+
+[node name="ColorRect" type="TextureRect" parent="." unique_id=1410684489]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
@@ -161,6 +166,7 @@ autostart = true
 
 [node name="HeartsLabel" type="Label" parent="." unique_id=1931113325]
 unique_name_in_owner = true
+layout_mode = 0
 offset_left = 21.0
 offset_top = 48.0
 offset_right = 300.0
@@ -168,7 +174,7 @@ offset_bottom = 120.0
 theme_override_constants/paragraph_spacing = 0
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
-theme_override_constants/outline_size = 13
+theme_override_constants/outline_size = 0
 theme_override_constants/shadow_outline_size = 0
 theme_override_font_sizes/font_size = 39
 text = "❤️❤️❤️❤️❤️"

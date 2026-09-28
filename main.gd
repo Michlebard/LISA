@@ -1,11 +1,11 @@
-extends Node2D
+extends Control
 
-@export var word_label: Label
+@export var word_label: Control
 @export var hearts_label: Label
 
 var balloon_scene = null
 
-# Путь к файлу сохранения на компьютере
+# Путь к файлу сохранения
 const SAVE_FILE_PATH = "user://save_data.cfg"
 
 # 100 слов на 20 уровней
@@ -53,8 +53,10 @@ var unlocked_level = 1
 var max_lives = 5
 var current_lives = 5
 
-# Таймер голоса
+# Таймеры и плееры
 var voice_timer: Timer
+var voice_player: AudioStreamPlayer
+var bg_music_player: AudioStreamPlayer
 
 func _ready():
 	load_game()
@@ -66,9 +68,33 @@ func _ready():
 	
 	setup_custom_cursor()
 	setup_voice_timer()
+	setup_bg_music()
 	find_labels_automatically()
 	get_or_create_word_label()
 	show_main_menu()
+
+# --- СИСТЕМА ФОНОВОЙ МУЗЫКИ ---
+
+func setup_bg_music():
+	bg_music_player = AudioStreamPlayer.new()
+	bg_music_player.name = "BGMusicPlayer"
+	bg_music_player.volume_db = 0.0 
+	add_child(bg_music_player)
+	
+	var music_paths = [
+		"res://bg_music.mp3.mp3",
+		"res://sounds/bg_music.mp3.mp3",
+		"res://bg_music.mp3",
+		"res://sounds/bg_music.mp3"
+	]
+	
+	for path in music_paths:
+		if ResourceLoader.exists(path):
+			var stream = load(path)
+			bg_music_player.stream = stream
+			bg_music_player.play()
+			print("Фоновая музыка успешно загружена с пути: ", path)
+			break
 
 # --- СИСТЕМА СОХРАНЕНИЯ И ЗАГРУЗКИ ---
 
@@ -76,17 +102,14 @@ func save_game():
 	var config = ConfigFile.new()
 	config.set_value("Progress", "unlocked_level", unlocked_level)
 	config.save(SAVE_FILE_PATH)
-	print("Прогресс сохранён! Открыт уровень: ", unlocked_level)
 
 func load_game():
 	var config = ConfigFile.new()
 	var err = config.load(SAVE_FILE_PATH)
 	if err == OK:
 		unlocked_level = config.get_value("Progress", "unlocked_level", 1)
-		print("Прогресс успешно загружен! Открытый уровень: ", unlocked_level)
 	else:
 		unlocked_level = 1
-		print("Файл сохранения не найден. Начинаем с 1 уровня.")
 
 # --- ПОИСК КАРТИНКИ ДРОТИКА ---
 
@@ -130,12 +153,17 @@ func update_level_buttons():
 				b.disabled = true
 				b.modulate = Color(0.5, 0.5, 0.5, 0.6)
 
-# --- НАСТРОЙКА ТАЙМЕРА ГОЛОСА ---
+# --- ТАЙМЕР И ПЛЕЕР ДЛЯ ГОЛОСА ---
 
 func setup_voice_timer():
+	voice_player = AudioStreamPlayer.new()
+	voice_player.name = "VoiceAudioPlayer"
+	add_child(voice_player)
+	
 	voice_timer = Timer.new()
 	voice_timer.name = "VoiceRepeatTimer"
 	voice_timer.wait_time = 1.8
+	voice_timer.one_shot = false
 	voice_timer.timeout.connect(_on_voice_timer_timeout)
 	add_child(voice_timer)
 
@@ -151,38 +179,92 @@ func start_voice_repetition():
 func stop_voice_repetition():
 	if voice_timer:
 		voice_timer.stop()
+	if voice_player:
+		voice_player.stop()
 
-# --- ТЕКСТ СЛОВА И НАДПИСИ ---
-
-func get_or_create_word_label() -> Label:
-	if word_label != null and is_instance_valid(word_label):
-		return word_label
+func play_letter_sound(symbol_name: String):
+	if symbol_name == "":
+		return
 		
-	var existing = find_node_by_name(self, "DynamicWordLabel") as Label
+	if voice_player == null:
+		voice_player = AudioStreamPlayer.new()
+		voice_player.name = "VoiceAudioPlayer"
+		add_child(voice_player)
+		
+	var sound_path = "res://sounds/" + symbol_name.to_lower() + ".mp3"
+	if not ResourceLoader.exists(sound_path):
+		sound_path = "res://sounds/" + symbol_name.to_lower() + ".wav"
+		
+	if ResourceLoader.exists(sound_path):
+		var sound = load(sound_path)
+		voice_player.stop()
+		voice_player.stream = sound
+		voice_player.play()
+
+# --- ОТОБРАЖЕНИЕ И ПОКРАСКА СЛОВ (ИСПОЛЬЗУЕМ ЯКОРЯ В CONTROL) ---
+
+func get_or_create_word_label() -> RichTextLabel:
+	var existing = find_node_by_name(self, "DynamicWordLabel") as RichTextLabel
 	if existing != null:
-		word_label = existing
-		return word_label
-		
-	var new_lbl = Label.new()
+		existing.z_index = 100
+		return existing
+			
+	var new_lbl = RichTextLabel.new()
 	new_lbl.name = "DynamicWordLabel"
-	new_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	new_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	new_lbl.bbcode_enabled = true
+	new_lbl.scroll_active = false
+	new_lbl.autowrap_mode = TextServer.AUTOWRAP_OFF
+	new_lbl.clip_contents = false
 	
-	new_lbl.custom_minimum_size = Vector2(400, 60)
-	var viewport_width = get_viewport_rect().size.x
-	if viewport_width > 0:
-		new_lbl.position = Vector2((viewport_width - 400) / 2, 30)
-	else:
-		new_lbl.position = Vector2(200, 30)
-		
-	new_lbl.add_theme_font_size_override("font_size", 48)
-	new_lbl.add_theme_color_override("font_color", Color(1, 0.85, 0))
+	# Используем ЯКОРЯ Control для идеального растягивания:
+	new_lbl.anchor_left = 0.0
+	new_lbl.anchor_right = 1.0
+	new_lbl.anchor_top = 0.0
+	new_lbl.anchor_bottom = 0.2
+	new_lbl.offset_left = 0
+	new_lbl.offset_right = 0
+	new_lbl.offset_top = 25
+	new_lbl.offset_bottom = 0
+	
+	new_lbl.add_theme_font_size_override("normal_font_size", 56)
+	new_lbl.add_theme_color_override("default_color", Color(1, 1, 1))
 	new_lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0))
-	new_lbl.add_theme_constant_override("outline_size", 8)
+	new_lbl.add_theme_constant_override("outline_size", 12)
+	new_lbl.z_index = 100
 	
 	add_child(new_lbl)
-	word_label = new_lbl
-	return word_label
+	return new_lbl
+
+func update_word_display():
+	var w_lbl = get_or_create_word_label()
+	if not w_lbl:
+		return
+		
+	w_lbl.visible = true
+	w_lbl.move_to_front()
+		
+	var bb_text = ""
+	
+	if typeof(current_word_data) == TYPE_ARRAY:
+		for i in range(current_word_data.size()):
+			var syl = current_word_data[i]
+			if i < current_unit_index:
+				bb_text += "[color=red]" + syl + "[/color]"
+			else:
+				bb_text += "[color=#FFD700]" + syl + "[/color]"
+			
+			if i < current_word_data.size() - 1:
+				bb_text += "[color=#FFD700]-[/color]"
+	else:
+		var word_str = str(current_word_data)
+		for i in range(word_str.length()):
+			var char_str = word_str[i]
+			if i < current_unit_index:
+				bb_text += "[color=red]" + char_str + "[/color]"
+			else:
+				bb_text += "[color=#FFD700]" + char_str + "[/color]"
+				
+	w_lbl.text = "[center]" + bb_text + "[/center]"
 
 func find_labels_automatically():
 	var all_labels = []
@@ -245,6 +327,7 @@ func select_level(level_num: int):
 	var w_lbl = get_or_create_word_label()
 	if w_lbl:
 		w_lbl.visible = true
+		w_lbl.move_to_front()
 		
 	if hearts_label:
 		hearts_label.visible = true
@@ -262,21 +345,17 @@ func start_next_word():
 		current_word_data = levels[current_level_index][current_word_index]
 		current_unit_index = 0
 		
-		var display_text = ""
 		if typeof(current_word_data) == TYPE_ARRAY:
 			current_target_symbol = current_word_data[0]
-			for i in range(current_word_data.size()):
-				display_text += current_word_data[i]
-				if i < current_word_data.size() - 1:
-					display_text += "-"
 		else:
 			current_target_symbol = current_word_data[0]
-			display_text = current_word_data
+		
+		update_word_display()
 		
 		var w_lbl = get_or_create_word_label()
 		if w_lbl:
-			w_lbl.text = display_text
 			w_lbl.visible = true
+			w_lbl.move_to_front()
 			
 		is_transitioning = false
 		start_voice_repetition()
@@ -291,6 +370,8 @@ func advance_symbol():
 		total_units = current_word_data.size()
 	else:
 		total_units = current_word_data.length()
+	
+	update_word_display()
 	
 	if current_unit_index < total_units:
 		if typeof(current_word_data) == TYPE_ARRAY:
@@ -312,7 +393,9 @@ func advance_symbol():
 		
 		var w_lbl = get_or_create_word_label()
 		if w_lbl:
-			w_lbl.text = "👍 " + full_word + "!"
+			w_lbl.text = "[center][color=green]👍 " + full_word + "![/color][/center]"
+			w_lbl.visible = true
+			w_lbl.move_to_front()
 			
 		await get_tree().create_timer(1.2).timeout
 		
@@ -336,14 +419,21 @@ func show_game_over_screen():
 		overlay = ColorRect.new()
 		overlay.name = "GameOverOverlay"
 		overlay.color = Color(0, 0, 0, 0.75)
-		overlay.size = get_viewport_rect().size
+		overlay.anchor_left = 0.0
+		overlay.anchor_right = 1.0
+		overlay.anchor_top = 0.0
+		overlay.anchor_bottom = 1.0
+		overlay.z_index = 200
 		
 		var label = Label.new()
 		label.name = "GameOverText"
 		label.text = "ИГРА ОКОНЧЕНА!"
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		label.size = overlay.size
+		label.anchor_left = 0.0
+		label.anchor_right = 1.0
+		label.anchor_top = 0.0
+		label.anchor_bottom = 1.0
 		label.add_theme_font_size_override("font_size", 48)
 		
 		overlay.add_child(label)
@@ -383,14 +473,15 @@ func finish_level():
 	
 	var w_lbl = get_or_create_word_label()
 	if w_lbl:
-		w_lbl.text = "УРОВЕНЬ ПРОЙДЕН!"
+		w_lbl.text = "[center][color=green]УРОВЕНЬ ПРОЙДЕН![/color][/center]"
 		w_lbl.visible = true
+		w_lbl.move_to_front()
 	if hearts_label: hearts_label.visible = false
 	
 	await get_tree().create_timer(2.5).timeout
 	show_main_menu()
 
-# --- СПАВН ШАРИКОВ С ПОДДЕРЖКОЙ СЛОГОВ ---
+# --- СПАВН ШАРИКОВ ---
 
 func _on_timer_timeout():
 	if not is_game_active or is_transitioning or balloon_scene == null:
@@ -403,24 +494,20 @@ func _on_timer_timeout():
 		random_symbol = current_target_symbol
 	else:
 		if typeof(current_word_data) == TYPE_ARRAY:
-			# Набор случайных слогов для помех
 			var extra_syllables = [
 				"МА", "ПА", "БА", "ТА", "КО", "СИ", "МУ", "ЛА", "РА", "ДО",
 				"КА", "ЛО", "НИ", "ША", "ШКА", "ЧКА", "ЛИ", "НО", "ВА", "ГА"
 			]
 			random_symbol = extra_syllables[randi() % extra_syllables.size()]
 		else:
-			# Набор букв для 1-10 уровней
 			var alphabet = "АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЭЮЯ"
 			random_symbol = alphabet[randi() % alphabet.length()]
 	
 	if "letter" in balloon:
 		balloon.letter = random_symbol
 		
-	# Стандартная удобная скорость полета для всех уровней
 	balloon.speed = randf_range(90, 160)
-		
-	balloon.position = Vector2(randf_range(100, 700), 650)
+	balloon.position = Vector2(randf_range(100, get_viewport_rect().size.x - 100), get_viewport_rect().size.y + 50)
 	balloon.add_to_group("balloons")
 	add_child(balloon)
 	
@@ -432,26 +519,7 @@ func clear_all_balloons():
 	for b in get_tree().get_nodes_in_group("balloons"):
 		b.queue_free()
 
-# --- ЗВУКИ И АНИМАЦИЯ ДРОТИКА ---
-
-func play_letter_sound(symbol_name: String):
-	if symbol_name == "":
-		return
-		
-	var audio_player = find_node_by_name(self, "AudioStreamPlayer") as AudioStreamPlayer
-	if audio_player == null:
-		audio_player = AudioStreamPlayer.new()
-		audio_player.name = "AudioStreamPlayer"
-		add_child(audio_player)
-		
-	var sound_path = "res://sounds/" + symbol_name.to_lower() + ".mp3"
-	if not ResourceLoader.exists(sound_path):
-		sound_path = "res://sounds/" + symbol_name.to_lower() + ".wav"
-		
-	if ResourceLoader.exists(sound_path):
-		var sound = load(sound_path)
-		audio_player.stream = sound
-		audio_player.play()
+# --- ЗВУК ОШИБКИ И СТРЕЛЬБА ДРОТИКА ---
 
 func play_error_sound():
 	var audio_player = find_node_by_name(self, "AudioStreamPlayer") as AudioStreamPlayer
@@ -529,7 +597,7 @@ func spawn_dart_and_pop(pressed_symbol: String, balloon_object: Node2D):
 			if current_lives <= 0:
 				game_over()
 
-# --- СИГНАЛЫ КНОПОК ---
+# --- СИГНАЛЫ КНОПОК ПОД АВТОМАТИКУ ---
 func _on_level_1_pressed(): select_level(1)
 func _on_level_2_pressed(): select_level(2)
 func _on_level_3_pressed(): select_level(3)
