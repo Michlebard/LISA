@@ -1,6 +1,5 @@
 extends Control
 
-@export var word_label: Control
 @export var hearts_label: Label
 
 var balloon_scene = null
@@ -9,45 +8,18 @@ var balloon_scene = null
 const SAVE_FILE_PATH = "user://save_data.cfg"
 
 # 100 слов на 20 уровней
-# Уровни 1-10: Буквы
-# Уровни 11-20: Слоги
-var levels = [
-	# --- УРОВНИ 1 - 10 (По буквам) ---
-	["КОТ", "ДОМ", "СОН", "ЛЕС", "МЯЧ"],                                # Уровень 1
-	["МАК", "НОС", "РОТ", "СЫР", "ЧАЙ"],                                # Уровень 2
-	["СУП", "СОК", "ЛЕВ", "КИТ", "ДУБ"],                                # Уровень 3
-	["МЕД", "УХО", "ЭХО", "ЛЕТО", "НЕБО"],                              # Уровень 4
-	["МАМА", "ПАПА", "ВОДА", "РЫБА", "РУКА"],                            # Уровень 5
-	["СТРЕКОЗА", "СКОВОРОДА", "ВЫКЛЮЧАТЕЛЬ", "ВЕЛОСИПЕД", "ПОЛОТЕНЦЕ"],  # Уровень 6
-	["БИНОКЛЬ", "КОМПЬЮТЕР", "МАРГАРИТКА", "ПРИКЛЮЧЕНИЕ", "ВОДОПРОВОД"],  # Уровень 7
-	["ВЕЗДЕХОД", "ПОДСОЛНУХ", "БУТЕРБРОД", "ТЕЛЕВИЗОР", "КАРАНДАШ"],      # Уровень 8
-	["ИГРУШКА", "ЭКСКУРСИЯ", "ПУТЕШЕСТВИЕ", "СМОРОДИНА", "ШОКОЛАД"],       # Уровень 9
-	["ПРАЗДНИК", "СНЕЖИНКА", "ТЕЛЕФОН", "АВТОБУС", "ДИНОЗАВР"],            # Уровень 10
-
-	# --- УРОВНИ 11 - 20 (По слогам) ---
-	[["БЕ", "ЛОЧ", "КА"], ["КА", "РАН", "ДАШ"], ["КАР", "ТИН", "КА"], ["ПО", "ДУШ", "КА"], ["ИГ", "РУШ", "КА"]],         # Уровень 11
-	[["ТЕТ", "РАДЬ"], ["О", "БЕЗЬ", "Я", "НА"], ["ЛО", "ПАТ", "КА"], ["АВ", "ТО", "БУС"], ["СА", "МО", "ЛЁТ"]],          # Уровень 12
-	[["О", "ДУ", "ВАН", "ЧИК"], ["КРО", "ВАТ", "КА"], ["ПО", "ДРУЖ", "КА"], ["МЕД", "ВЕ", "ЖО", "НОК"], ["СИ", "НИЧ", "КА"]], # Уровень 13
-	[["ПО", "ДА", "РОК"], ["ЗВЁЗ", "ДОЧ", "КА"], ["КЛУБ", "НИ", "КА"], ["ТРО", "ПИН", "КА"], ["ВО", "РО", "БЕЙ"]],       # Уровень 14
-	[["КОМ", "НА", "ТА"], ["ТА", "РЕЛ", "КА"], ["РУЧ", "КА"], ["ЗЕР", "КА", "ЛО"], ["КАС", "ТРЮ", "ЛЯ"]],                # Уровень 15
-	[["КО", "РОВ", "КА"], ["КОН", "ФЕТ", "КА"], ["ПО", "СЫЛ", "КА"], ["СА", "ПОЖ", "КИ"], ["СНЕ", "ЖИН", "КА"]],         # Уровень 16
-	[["РЫ", "БАЛ", "КА"], ["КОР", "ЗИН", "КА"], ["РО", "МАШ", "КА"], ["ТРАМ", "ВАЙ", "ЧИК"], ["КУ", "БИК"]],              # Уровень 17
-	[["ПИ", "РА", "МИД", "КА"], ["ЗА", "НА", "ВЕС", "КА"], ["ЛАС", "ТОЧ", "КА"], ["КО", "ЛО", "КОЛЬ", "ЧИК"], ["ПО", "ДУ", "ШЕЧ", "КА"]], # Уровень 18
-	[["СО", "СУЛЬ", "КА"], ["МОР", "КОВ", "КА"], ["КА", "ЧЕ", "ЛИ"], ["СТО", "ЛО", "ВА", "Я"], ["КАР", "ТОШ", "КА"]],     # Уровень 19
-	[["КА", "ПУС", "ТА"], ["ФОН", "ТАН", "ЧИК"], ["СКА", "МЕЙ", "КА"], ["КАР", "МАН", "ЧИК"], ["МО", "РО", "ЖЕ", "НО", "Е"]] # Уровень 20
-]
-
+var levels = LevelsData.LEVELS
 var current_level_index = 0
 var current_word_index = 0
 var current_word_data = null
 var current_unit_index = 0
 var current_target_symbol = ""
-
 var is_game_active = false
-var is_transitioning = false 
+var is_transitioning = false
 
 # Система прогресса
 var unlocked_level = 1
+var is_admin_enabled = false
 
 # Жизни
 var max_lives = 5
@@ -71,7 +43,22 @@ func _ready():
 	setup_bg_music()
 	find_labels_automatically()
 	get_or_create_word_label()
+	$ColorRect/MainMenu.resized.connect(update_menu_layout)
+	update_menu_layout()
 	show_main_menu()
+
+func update_menu_layout() -> void:
+	var menu = $ColorRect/MainMenu
+	var grid = $ColorRect/MainMenu/LevelScroll/VBoxContainer
+	# Оставляем место для боковых отступов и вертикальной полосы прокрутки.
+	var available_width: float = maxf(menu.size.x - 64.0, 1.0)
+	var font_size: int = int(clampf(available_width / 12.0, 24.0, 37.0))
+	grid.add_theme_font_size_override("font_size", font_size)
+	var button_width: float = 1.0
+	for button in grid.get_children():
+		button_width = maxf(button_width, button.get_combined_minimum_size().x)
+	var separation: int = grid.get_theme_constant("h_separation")
+	grid.columns = clampi(int((available_width + separation) / (button_width + separation)), 1, 5)
 
 # --- СИСТЕМА ФОНОВОЙ МУЗЫКИ ---
 
@@ -91,10 +78,21 @@ func setup_bg_music():
 	for path in music_paths:
 		if ResourceLoader.exists(path):
 			var stream = load(path)
+			if stream is AudioStreamMP3:
+				stream.loop = true
 			bg_music_player.stream = stream
 			bg_music_player.play()
 			print("Фоновая музыка успешно загружена с пути: ", path)
 			break
+
+# Переключение звука (вкл / выкл)
+func toggle_music():
+	if bg_music_player != null:
+		bg_music_player.stream_paused = not bg_music_player.stream_paused
+		if bg_music_player.stream_paused:
+			print("Фоновая музыка поставлена на паузу")
+		else:
+			print("Фоновая музыка снята с паузы")
 
 # --- СИСТЕМА СОХРАНЕНИЯ И ЗАГРУЗКИ ---
 
@@ -201,7 +199,7 @@ func play_letter_sound(symbol_name: String):
 		voice_player.stream = sound
 		voice_player.play()
 
-# --- ОТОБРАЖЕНИЕ И ПОКРАСКА СЛОВ (ИСПОЛЬЗУЕМ ЯКОРЯ В CONTROL) ---
+# --- ОТОБРАЖЕНИЕ И ПОКРАСКА СЛОВ ---
 
 func get_or_create_word_label() -> RichTextLabel:
 	var existing = find_node_by_name(self, "DynamicWordLabel") as RichTextLabel
@@ -216,7 +214,6 @@ func get_or_create_word_label() -> RichTextLabel:
 	new_lbl.autowrap_mode = TextServer.AUTOWRAP_OFF
 	new_lbl.clip_contents = false
 	
-	# Используем ЯКОРЯ Control для идеального растягивания:
 	new_lbl.anchor_left = 0.0
 	new_lbl.anchor_right = 1.0
 	new_lbl.anchor_top = 0.0
@@ -292,6 +289,7 @@ func find_node_by_name(node: Node, target_name: String) -> Node:
 	return null
 
 func set_buttons_visible(v: bool):
+	$ColorRect/MainMenu.visible = v
 	var btns = []
 	get_all_children_of_type(self, "Button", btns)
 	for b in btns:
@@ -345,10 +343,7 @@ func start_next_word():
 		current_word_data = levels[current_level_index][current_word_index]
 		current_unit_index = 0
 		
-		if typeof(current_word_data) == TYPE_ARRAY:
-			current_target_symbol = current_word_data[0]
-		else:
-			current_target_symbol = current_word_data[0]
+		current_target_symbol = current_word_data[0]
 		
 		update_word_display()
 		
@@ -374,10 +369,7 @@ func advance_symbol():
 	update_word_display()
 	
 	if current_unit_index < total_units:
-		if typeof(current_word_data) == TYPE_ARRAY:
-			current_target_symbol = current_word_data[current_unit_index]
-		else:
-			current_target_symbol = current_word_data[current_unit_index]
+		current_target_symbol = current_word_data[current_unit_index]
 		start_voice_repetition()
 	else:
 		is_transitioning = true
@@ -618,3 +610,78 @@ func _on_level_17_pressed(): select_level(17)
 func _on_level_18_pressed(): select_level(18)
 func _on_level_19_pressed(): select_level(19)
 func _on_level_20_pressed(): select_level(20)
+# --- ЕДИНАЯ ОБРАБОТКА ВВОДА (_input) ---
+
+func _input(event: InputEvent) -> void:
+	# 1. Переключение музыки в углах меню, без конфликта с кликами по шарикам.
+	if $ColorRect/MainMenu.visible and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		var screen_size = get_viewport_rect().size
+		var click_pos = event.position
+		
+		var is_bottom_zone = click_pos.y >= screen_size.y - 150
+		var is_left_corner = click_pos.x <= 150
+		var is_right_corner = click_pos.x >= screen_size.x - 150
+		
+		if is_bottom_zone and (is_left_corner or is_right_corner):
+			toggle_music()
+			get_viewport().set_input_as_handled()
+			return
+
+	# 2. Обработка клавиш (M, 1, 2, 3)
+	if event is InputEventKey and event.pressed and not event.is_echo():
+		if event.physical_keycode == KEY_M:
+			toggle_music()
+			return
+
+		if not OS.has_feature("mobile"):
+			# Клавиша 1 — включить админку
+			if event.physical_keycode == KEY_1 or event.keycode == KEY_1 or event.keycode == KEY_KP_1:
+				toggle_admin_panel()
+				get_viewport().set_input_as_handled()
+			
+			# Клавиша 2 — отключить админку
+			elif event.physical_keycode == KEY_2 or event.keycode == KEY_2 or event.keycode == KEY_KP_2:
+				disable_admin_panel()
+				get_viewport().set_input_as_handled()
+			# Клавиша 3 — сбросить прогресс при включённой админке
+			elif is_admin_enabled and (event.physical_keycode == KEY_3 or event.keycode == KEY_3 or event.keycode == KEY_KP_3):
+				reset_progress()
+				get_viewport().set_input_as_handled()
+
+# Включение админки
+func toggle_admin_panel() -> void:
+	if OS.has_feature("mobile"):
+		return
+
+	print("--- АКТИВИРОВАНА АДМИНКА ---")
+	is_admin_enabled = true
+	current_lives = max_lives
+	if is_game_active:
+		update_hearts_display()
+	unlocked_level = 20
+	update_level_buttons()
+
+# Выключение админки
+func disable_admin_panel() -> void:
+	if OS.has_feature("mobile"):
+		return
+
+	print("--- АДМИНКА ВЫКЛЮЧЕНА ---")
+	is_admin_enabled = false
+	load_game()
+	update_level_buttons()
+
+func reset_progress() -> void:
+	if not is_admin_enabled or OS.has_feature("mobile"):
+		return
+
+	unlocked_level = 1
+	save_game()
+	current_level_index = 0
+	current_word_index = 0
+	current_unit_index = 0
+	current_word_data = null
+	current_target_symbol = ""
+	current_lives = max_lives
+	show_main_menu()
+	print("--- ПРОГРЕСС СБРОШЕН ---")
