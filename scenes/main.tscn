@@ -1,0 +1,250 @@
+[gd_scene format=3 uid="uid://bcaf1ejviv66v"]
+
+[ext_resource type="Script" uid="uid://bnpolwvpu3lae" path="res://scripts/main.gd" id="1_ig7tw"]
+[ext_resource type="Texture2D" uid="uid://cxy1bubwk4w6e" path="res://assets/textures/background.jpeg" id="2_0xm2m"]
+[ext_resource type="Texture2D" uid="uid://fw8qda0dd52o" path="res://assets/icons/icons8-шестерня-96.png" id="3_sugp2"]
+
+[sub_resource type="Theme" id="Theme_4kxuq"]
+default_font_size = 40
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x6vow"]
+bg_color = Color(0.94338286, 0.41034576, 0.3123143, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="Theme" id="Theme_4emby"]
+default_font_size = 37
+
+[node name="Main" type="Control" unique_id=1724203934 groups=["game"]]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_ig7tw")
+
+[node name="ColorRect" type="TextureRect" parent="." unique_id=1410684489]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource("2_0xm2m")
+expand_mode = 1
+metadata/_edit_lock_ = true
+
+[node name="MainMenu" type="Control" parent="ColorRect" unique_id=1547082994]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource("Theme_4kxuq")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/MainMenu" unique_id=1898119674]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 37.0
+offset_right = 1129.0
+offset_bottom = 629.0
+theme_override_constants/separation = 30
+
+[node name="Label" type="Label" parent="ColorRect/MainMenu/VBoxContainer" unique_id=727789575]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/outline_size = 9
+theme_override_font_sizes/font_size = 50
+theme_override_styles/normal = SubResource("StyleBoxFlat_x6vow")
+text = "УЧИМСЯ ЧИТАТЬ!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LevelScroll" type="ScrollContainer" parent="ColorRect/MainMenu/VBoxContainer" unique_id=183655914]
+custom_minimum_size = Vector2(800, 200)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="LevelsContainer" type="GridContainer" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll" unique_id=158092483]
+unique_name_in_owner = true
+modulate = Color(0.70177746, 0.86063355, 1, 1)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme = SubResource("Theme_4emby")
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 15
+columns = 5
+
+[node name="Button1" type="Button" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll/LevelsContainer" unique_id=686053777]
+layout_mode = 2
+text = "Уровень 1"
+
+[node name="Button2" type="Button" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll/LevelsContainer" unique_id=1719656455]
+layout_mode = 2
+text = "Уровень 2"
+
+[node name="Button3" type="Button" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll/LevelsContainer" unique_id=770472408]
+layout_mode = 2
+text = "Уровень 3"
+
+[node name="Button4" type="Button" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll/LevelsContainer" unique_id=740640708]
+layout_mode = 2
+text = "Уровень 4"
+
+[node name="Button5" type="Button" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll/LevelsContainer" unique_id=896576720]
+layout_mode = 2
+text = "Уровень 5"
+
+[node name="Button6" type="Button" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll/LevelsContainer" unique_id=1473281678]
+layout_mode = 2
+text = "Уровень 6"
+
+[node name="Button7" type="Button" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll/LevelsContainer" unique_id=1121599993]
+layout_mode = 2
+text = "Уровень 7"
+
+[node name="Button8" type="Button" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll/LevelsContainer" unique_id=2115145866]
+layout_mode = 2
+text = "Уровень 8"
+
+[node name="Button9" type="Button" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll/LevelsContainer" unique_id=1468736740]
+layout_mode = 2
+text = "Уровень 9"
+
+[node name="Button10" type="Button" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll/LevelsContainer" unique_id=1331233057]
+layout_mode = 2
+text = "Уровень 10"
+
+[node name="Button11" type="Button" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll/LevelsContainer" unique_id=478604158]
+layout_mode = 2
+text = "Уровень 11"
+
+[node name="Button12" type="Button" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll/LevelsContainer" unique_id=1170237818]
+layout_mode = 2
+text = "Уровень 12"
+
+[node name="Button13" type="Button" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll/LevelsContainer" unique_id=1521433991]
+layout_mode = 2
+text = "Уровень 13"
+
+[node name="Button14" type="Button" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll/LevelsContainer" unique_id=518603313]
+layout_mode = 2
+text = "Уровень 14"
+
+[node name="Button15" type="Button" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll/LevelsContainer" unique_id=1371044926]
+layout_mode = 2
+text = "Уровень 15"
+
+[node name="Button16" type="Button" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll/LevelsContainer" unique_id=1347625606]
+layout_mode = 2
+text = "Уровень 16"
+
+[node name="Button17" type="Button" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll/LevelsContainer" unique_id=1584441866]
+layout_mode = 2
+text = "Уровень 17"
+
+[node name="Button18" type="Button" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll/LevelsContainer" unique_id=2121182111]
+layout_mode = 2
+text = "Уровень 18"
+
+[node name="Button19" type="Button" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll/LevelsContainer" unique_id=1741124092]
+layout_mode = 2
+text = "Уровень 19"
+
+[node name="Button20" type="Button" parent="ColorRect/MainMenu/VBoxContainer/LevelScroll/LevelsContainer" unique_id=510425720]
+layout_mode = 2
+text = "Уровень 20"
+
+[node name="SettingButton" type="TextureButton" parent="ColorRect/MainMenu" unique_id=1279427328]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1021.0
+offset_top = 16.0
+offset_right = 1109.0
+offset_bottom = 108.0
+texture_normal = ExtResource("3_sugp2")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="SettingContainer" type="ColorRect" parent="ColorRect/MainMenu" unique_id=1990222136]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 368.0
+offset_top = 99.0
+offset_right = 800.0
+offset_bottom = 588.0
+color = Color(0, 0.19215687, 0.5372549, 0.9098039)
+
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect/MainMenu/SettingContainer" unique_id=883399425]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/MainMenu/SettingContainer/MarginContainer" unique_id=1262713333]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ColorRect/MainMenu/SettingContainer/MarginContainer/VBoxContainer" unique_id=1177820694]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Музыка"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MusicSlider" type="HSlider" parent="ColorRect/MainMenu/SettingContainer/MarginContainer/VBoxContainer" unique_id=413202584]
+unique_name_in_owner = true
+layout_mode = 2
+value = 50.0
+
+[node name="Label2" type="Label" parent="ColorRect/MainMenu/SettingContainer/MarginContainer/VBoxContainer" unique_id=1485168061]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Звуки"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SoundSlider" type="HSlider" parent="ColorRect/MainMenu/SettingContainer/MarginContainer/VBoxContainer" unique_id=2122462895]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 2
+value = 80.0
+
+[node name="SaveButton" type="Button" parent="ColorRect/MainMenu/SettingContainer/MarginContainer/VBoxContainer" unique_id=1382148157]
+unique_name_in_owner = true
+layout_mode = 2
+text = "СОХРАНИТЬ"
+
+[node name="HeartsLabel" type="Label" parent="." unique_id=1931113325]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 21.0
+offset_top = 48.0
+offset_right = 300.0
+offset_bottom = 120.0
+theme_override_constants/paragraph_spacing = 0
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_font_sizes/font_size = 39
+text = "❤️❤️❤️❤️❤️"

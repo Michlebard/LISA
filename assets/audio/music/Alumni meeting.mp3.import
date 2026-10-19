@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://coaponkrabyjp"
+path="res://.godot/imported/Alumni meeting.mp3-aaa4961d777e6bea460e2f118cbcf4a4.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/music/Alumni meeting.mp3"
+dest_files=["res://.godot/imported/Alumni meeting.mp3-aaa4961d777e6bea460e2f118cbcf4a4.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

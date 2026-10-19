@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://5xko3ojfcgv6"
+path="res://.godot/imported/Inside Time.mp3-f4189111f23c3ab0d6791f668b4a4fce.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/music/Inside Time.mp3"
+dest_files=["res://.godot/imported/Inside Time.mp3-f4189111f23c3ab0d6791f668b4a4fce.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
