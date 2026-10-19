@@ -32,6 +32,8 @@ func setup(screen: Control, game_audio: Node, game_voice: Node) -> void:
 	blocker.mouse_filter = Control.MOUSE_FILTER_STOP
 	blocker.z_index = 10
 	panel.get_parent().add_child(blocker)
+	# GUI проверяет порядок узлов, а не z_index: окно должно идти после блокировки.
+	panel.get_parent().move_child(blocker, panel.get_index())
 	panel.z_index = 11
 	store.load_settings()
 	_sync_sliders()
