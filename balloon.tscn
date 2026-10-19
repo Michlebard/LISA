@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://ctcdq01jmhbyy"]
 
-[ext_resource type="Script" path="res://balloon.gd" id="1_n2rxu"]
-[ext_resource type="Texture2D" path="res://blue.png" id="2_r345k"]
-[ext_resource type="Texture2D" path="res://blue-pop.png" id="3_4emby"]
+[ext_resource type="Script" uid="uid://bv25pj3mmsg4" path="res://scripts/gameplay/balloon.gd" id="1_n2rxu"]
+[ext_resource type="Texture2D" uid="uid://digiytepyi1qv" path="res://assets/textures/balloons/blue-pop.png" id="2_r345k"]
+[ext_resource type="Texture2D" uid="uid://digiytepyi1qv" path="res://assets/textures/balloons/blue-pop.png" id="3_4emby"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ig7tw"]
 radius = 38.209946

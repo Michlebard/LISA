@@ -8,6 +8,12 @@ const TEST_SAVE: String = "res://.godot/test_progress.cfg"
 
 class VoiceProbe extends "res://scripts/audio/voice_controller.gd":
 	var spoken: Array[String] = []
+	var recorded: Array[String] = []
+
+	func _play_letter(symbol: String) -> void:
+		assert(letter_paths.has(symbol.to_lower()))
+		recorded.append(symbol)
+		spoken.append(symbol)
 
 	func speak(text: String) -> void:
 		speech_id += 1
@@ -43,6 +49,7 @@ func run_checks() -> void:
 			var word: String = game.session.full_word()
 			for index in range(len(data)):
 				assert(game.voice.spoken.back() == data[index])
+				assert(game.voice.repeat_as_letter == (level_number <= 10))
 				assert(not game.voice.repeat_timer.is_stopped())
 				game._on_symbol_selected(data[index])
 				checked_units += 1
@@ -148,13 +155,20 @@ func check_native_voice() -> void:
 	root.add_child(game)
 	game.audio.music_player.stop()
 	game.select_level(1)
-	assert(game.voice.voice_id != "", "No Russian system voice")
+	assert(game.voice.letter_player.playing)
+	assert(game.voice.letter_player.stream != null)
+	assert(game.voice.voice_id.is_empty(), "Letters must not use TTS")
 	await create_timer(0.25).timeout
-	assert(DisplayServer.tts_is_speaking())
 	game.show_main_menu()
+	assert(not game.voice.letter_player.playing)
 	await create_timer(0.1).timeout
 	assert(not DisplayServer.tts_is_speaking() and not game.voice.pending)
 	game.progress.unlocked_level = 20
+	game.select_level(11)
+	assert(game.voice.voice_id != "", "No Russian system voice")
+	assert(not game.voice.letter_player.playing)
+	await create_timer(0.25).timeout
+	assert(DisplayServer.tts_is_speaking())
 	game.select_level(6)
 	game.session.word_index = 2
 	game.session.unit_index = len(game.session.word_data()) - 1
@@ -171,4 +185,4 @@ func check_native_voice() -> void:
 	assert(game.session.word_index == 3)
 	game.show_main_menu()
 	game.free()
-	print("PASS: native Russian TTS for letters and words; waits for word completion")
+	print("PASS: recorded letters, native Russian TTS for syllables and words; waits for completion")

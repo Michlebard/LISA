@@ -15,7 +15,7 @@ scripts/
     balloon_spawner.gd     Создание шариков и сигнал выбора
   ui/game_view.gd          Меню, подсветка слова, жизни, результат
   audio/
-    voice_controller.gd    Единый русский TTS, повторы, ожидание речи
+    voice_controller.gd    Записи букв, TTS слогов и слов, повторы
     game_audio.gd          Музыка и звук ошибки
   data/
     levels_data.gd         Слова и слоги всех 20 уровней
@@ -27,7 +27,7 @@ assets/
   textures/                Фон и изображения шариков
   audio/music/             Фоновая музыка
   audio/effects/           Звук ошибки
-  audio/letters/           Прежние записи букв, сохранены для справки
+  audio/letters/           Записи букв для уровней 1–10
   icons/                   Иконка проекта
 tests/                     Проверки игры и озвучки
 archive/                   Неиспользуемый исходник дротика
@@ -38,7 +38,13 @@ archive/                   Неиспользуемый исходник дро�
 Интерфейс не меняет правила игры, а озвучка не выбирает следующий уровень.
 
 Путь и формат сохранения прежние: `user://save_data.cfg`, секция `Progress`,
-поле `unlocked_level`. Для синтеза речи нужен установленный русский системный голос.
+поле `unlocked_level`. Буквы на уровнях 1–10 озвучиваются из файлов;
+слоги на уровнях 11–20 и собранные слова — системным русским голосом.
+При наличии Microsoft Pavel используется он; иначе выбирается доступный русский голос.
+Ползунок «Звуки» управляет записями, эффектами и синтезом речи.
+Для системной речи применяется множитель громкости 1.2 относительно ползунка:
+при 80% она получает 96%. Верхняя граница системного TTS — 100%; записи букв
+и эффекты сохраняют выбранную громкость.
 
 ## Музыкальный плейлист
 
@@ -64,6 +70,7 @@ archive/                   Неиспользуемый исходник дро�
 godot --headless --path . --script tests/voice_smoke_test.gd
 godot --headless --path . --script tests/music_smoke_test.gd
 godot --headless --path . --script tests/settings_smoke_test.gd
+godot --headless --path . --script tests/letter_voice_smoke_test.gd
 godot --path . --rendering-method gl_compatibility --audio-driver Dummy --minimized --script tests/voice_smoke_test.gd -- --native-tts
 ```
 

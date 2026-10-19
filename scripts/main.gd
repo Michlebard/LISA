@@ -69,7 +69,7 @@ func select_level(level_number: int) -> void:
 
 func _start_word() -> void:
 	view.show_word(session.word_data(), session.unit_index)
-	voice.start_repeating(session.target())
+	voice.start_repeating(session.target(), session.word_data() is String)
 	balloons.start(session.target(), session.word_data() is Array)
 
 func _on_symbol_selected(symbol: String) -> void:
@@ -86,7 +86,7 @@ func _on_symbol_selected(symbol: String) -> void:
 		_complete_word()
 	else:
 		view.show_word(session.word_data(), session.unit_index)
-		voice.start_repeating(session.target())
+		voice.start_repeating(session.target(), session.word_data() is String)
 		balloons.set_target(session.target())
 
 func _complete_word() -> void:
